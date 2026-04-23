@@ -1,17 +1,30 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: Template for initial infrastructure (ap-southeast-1)
 
+Parameters:
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+
 Resources:
   GamedayVPC:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: 10.0.0.0/16
+      Tags:
+        - Key: Name
+          Value: GamedayVPC
 
   PublicSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
       CidrBlock: 10.0.0.0/24
       VpcId: !Ref GamedayVPC
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: "ap-southeast-1a"
+      Tags:
+        - Key: Name
+          Value: "Public Subnet 1"
 
   GamedayIGW:
     Type: AWS::EC2::InternetGateway
@@ -51,13 +64,9 @@ Resources:
           FromPort: 22
           ToPort: 22
           CidrIp: 0.0.0.0/0
-
-  StarterKeyPair:
-    Type: AWS::EC2::KeyPair
-    Properties:
-      KeyFormat: pem
-      KeyName: starter-keypair
-      KeyType: rsa
+      Tags:
+        - Key: Name
+          Value: "EC2 Security Group"
 
   StarterEC2: 
     Type: AWS::EC2::Instance
@@ -65,10 +74,13 @@ Resources:
       # Using amazon linux 2023 kernel 6.1 64-bit (x86), uefi-preferred
       ImageId: ami-03c3282f979a6a9b0
       InstanceType: t3.micro
-      KeyName: !Ref StarterKeyPair
+      KeyName: !Ref KeyName
       NetworkInterfaces: 
         - AssociatePublicIpAddress: true
           DeviceIndex: "0"
           GroupSet:
             - !Ref SecurityGroup
           SubnetId: !Ref PublicSubnet1
+      Tags:
+        - Key: Name
+          Value: "StarterEC2"
