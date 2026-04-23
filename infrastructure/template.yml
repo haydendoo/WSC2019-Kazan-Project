@@ -1,0 +1,74 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Template for initial infrastructure (ap-southeast-1)
+
+Resources:
+  GamedayVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.0.0/24
+      VpcId: !Ref GamedayVPC
+
+  GamedayIGW:
+    Type: AWS::EC2::InternetGateway
+
+  GamedayIGWAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref GamedayIGW
+      VpcId: !Ref GamedayVPC
+
+  GamedayRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref GamedayVPC
+
+  DefaultRoute:
+    Type: AWS::EC2::Route
+    DependsOn: GamedayIGWAttachment
+    Properties:
+      RouteTableId: !Ref GamedayRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref GamedayIGW
+
+  SubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref GamedayRouteTable
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH
+      VpcId: !Ref GamedayVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+  StarterKeyPair:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyFormat: pem
+      KeyName: starter-keypair
+      KeyType: rsa
+
+  StarterEC2: 
+    Type: AWS::EC2::Instance
+    Properties: 
+      # Using amazon linux 2023 kernel 6.1 64-bit (x86), uefi-preferred
+      ImageId: ami-03c3282f979a6a9b0
+      InstanceType: t3.micro
+      KeyName: !Ref StarterKeyPair
+      NetworkInterfaces: 
+        - AssociatePublicIpAddress: true
+          DeviceIndex: "0"
+          GroupSet:
+            - !Ref SecurityGroup
+          SubnetId: !Ref PublicSubnet1
