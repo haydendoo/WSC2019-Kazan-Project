@@ -83,7 +83,7 @@ func generateRandomToken(size int) (string, error) {
 }
 
 func simulateWorkload() {
-	for i := 0; i < 1e7; i++ {
+	for i := 0; i < 1000; i++ {
 		_ = i * i
 	}
 }
