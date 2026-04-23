@@ -10,6 +10,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"crypto/tls"
 
 
 	_ "github.com/go-sql-driver/mysql"
@@ -66,6 +67,9 @@ func connectRedis(config Config) (*redis.Client) {
 		Password: "", // no password
 		DB:       0,  // use default DB
 		Protocol: 2,
+		TLSConfig: &tls.Config{
+			MinVersion: tls.VersionTLS12,
+		},
 	})
 	return rdb
 }
