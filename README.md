@@ -1,5 +1,5 @@
 # WSC2019-Kazan-Project
-Simulation of test project for the WSC2019 Kazan Test Project.
+Simulation of test project for the WSC2019 Kazan Test Project
 
 ## Initial Infrastructure
 There will just be a single EC2 Instance on a VPC with 1 public subnet. Participants are expected to create the rest of the infrastructure however they want
