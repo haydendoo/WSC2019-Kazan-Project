@@ -1,4 +1,1 @@
-2026/04/23 15:03:06 Starting server on port 80
-2026/04/23 15:03:13 Incoming request id=12
-2026/04/23 15:03:15 CACHE MISS id=12 (redisErr=dial tcp 127.0.0.1:6378: connect: connection refused, fsErr=open /tmp/12.txt: no such file or directory)
-2026/04/23 15:03:15 DB ERROR id=12 err=dial tcp 127.0.0.1:3306: connect: connection refused
+

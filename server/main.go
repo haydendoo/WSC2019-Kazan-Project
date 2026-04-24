@@ -1,21 +1,21 @@
 package main
 
 import (
+	"context"
 	"crypto/rand"
+	"crypto/tls"
 	"database/sql"
 	"encoding/base64"
 	"fmt"
 	"log"
 	"net/http"
-	"context"
 	"os"
 	"path/filepath"
-	"crypto/tls"
-
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	"gopkg.in/ini.v1"
 	"github.com/redis/go-redis/v9"
+	"gopkg.in/ini.v1"
 )
 
 type Config struct {
@@ -87,9 +87,7 @@ func generateRandomToken(size int) (string, error) {
 }
 
 func simulateWorkload() {
-	for i := 0; i < 1e6; i++ {
-		_ = i * i
-	}
+	time.Sleep(1 * time.Second)
 }
 
 func (app *App) rootHandler(w http.ResponseWriter, r *http.Request) {
