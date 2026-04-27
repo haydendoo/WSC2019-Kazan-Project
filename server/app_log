@@ -1,1 +1,22 @@
 
+2026/04/27 12:59:48 Starting server on port 80
+2026/04/27 12:59:53 Request with no id found
+2026/04/27 12:59:53 Request with no id found
+2026/04/27 12:59:59 Incoming request id=1
+2026/04/27 13:00:01 CACHE MISS id=1 (redisErr=dial tcp 127.0.0.1:6379: connect: connection refused, fsErr=open /tmp/1.txt: no such file or directory)
+2026/04/27 13:00:02 DB ERROR id=1 err=dial tcp 127.0.0.1:3306: connect: connection refused
+2026/04/27 13:00:02 Request with no id found
+2026/04/27 13:00:19 Request with no id found
+2026/04/27 13:00:24 Incoming request id=assca
+2026/04/27 13:00:26 CACHE MISS id=assca (redisErr=dial tcp 127.0.0.1:6379: connect: connection refused, fsErr=open /tmp/assca.txt: no such file or directory)
+2026/04/27 13:00:27 DB ERROR id=assca err=dial tcp 127.0.0.1:3306: connect: connection refused
+2026/04/27 13:00:27 Request with no id found
+2026/04/27 13:00:31 Incoming request id=1'
+2026/04/27 13:00:33 CACHE MISS id=1' (redisErr=dial tcp 127.0.0.1:6379: connect: connection refused, fsErr=open /tmp/1'.txt: no such file or directory)
+2026/04/27 13:00:34 DB ERROR id=1' err=dial tcp 127.0.0.1:3306: connect: connection refused
+2026/04/27 13:00:34 Request with no id found
+2026/04/27 14:41:40 Starting server on port 80
+2026/04/27 14:44:24 Starting server on port 80
+2026/04/27 14:44:31 Request with no id found
+2026/04/27 14:44:31 Request with no id found
+2026/04/27 14:44:34 Request with no id found

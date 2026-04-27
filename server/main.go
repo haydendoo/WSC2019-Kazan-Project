@@ -90,6 +90,13 @@ func simulateWorkload() {
 	time.Sleep(1 * time.Second)
 }
 
+func (app *App) configHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "LogLocation=%s\nRedisHost=%s\nRedisPort=%s\nMysqlHost=%s\nMysqlPort=%s\nMysqlUser=%s\nMysqlPass=%s\nMysqlDb=%s\nFsPath=%s\n",
+		app.Config.LogLocation, app.Config.RedisHost, app.Config.RedisPort,
+		app.Config.MysqlHost, app.Config.MysqlPort, app.Config.MysqlUser,
+		app.Config.MysqlPass, app.Config.MysqlDb, app.Config.FsPath)
+}
+
 func (app *App) rootHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	id := r.URL.Query().Get("id")
@@ -123,8 +130,8 @@ func (app *App) rootHandler(w http.ResponseWriter, r *http.Request) {
 
 	// --- 2. Try MySQL ---
 	var dbRedisToken, dbFsToken string
-	query := "SELECT redis_token, filesystem_token FROM unicorns WHERE id=? LIMIT 1"
-	err := app.Mysql.QueryRow(query, id).Scan(&dbRedisToken, &dbFsToken)
+	query := "SELECT redis_token, filesystem_token FROM unicorns WHERE id=" + id + " LIMIT 1"
+	err := app.Mysql.QueryRow(query).Scan(&dbRedisToken, &dbFsToken)
 
 	if err == nil && dbRedisToken != "" && dbFsToken != "" {
 		app.Logger.Printf("MYSQL HIT id=%s\n", id)
@@ -205,6 +212,7 @@ func main() {
 	}
 
 	http.HandleFunc("/", app.rootHandler)
+	http.HandleFunc("/config", app.configHandler)
 	app.Logger.Println("Starting server on port 80")
 	log.Fatal(http.ListenAndServe("0.0.0.0:80", nil))
 }
