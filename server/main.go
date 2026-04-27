@@ -167,12 +167,22 @@ func (app *App) rootHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err = app.Mysql.Exec(
-		"INSERT INTO unicorns (id, redis_token, filesystem_token) VALUES (?, ?, ?)",
+		"INSERT INTO unicorns (id, redis_token, filesystem_token) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE id=id",
 		id, newRedisToken, newFsToken,
 	)
 	if err != nil {
 		app.Logger.Printf("DB WRITE ERROR id=%s err=%v\n", id, err)
 		http.Error(w, "DB write failed", http.StatusInternalServerError)
+		return
+	}
+
+	// Re-read the winner's tokens (another request may have won the race)
+	err = app.Mysql.QueryRow(
+		"SELECT redis_token, filesystem_token FROM unicorns WHERE id=? LIMIT 1", id,
+	).Scan(&newRedisToken, &newFsToken)
+	if err != nil {
+		app.Logger.Printf("DB READ ERROR id=%s err=%v\n", id, err)
+		http.Error(w, "DB read failed", http.StatusInternalServerError)
 		return
 	}
 
